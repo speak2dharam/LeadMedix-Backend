@@ -2,12 +2,14 @@
 using LeadMedixCRM.Application.Common.Interfaces.Services;
 using LeadMedixCRM.Application.Common.Pagination;
 using LeadMedixCRM.Application.Features.Users.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LeadMedixCRM.API.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class UsersController : ControllerBase
     {
@@ -20,7 +22,6 @@ namespace LeadMedixCRM.API.Controllers
         {
             await _userService.CreateAsync(dto, 1); // replace 1 with logged-in user id
             return Ok(ApiResponse<string>.SuccessResponse(null, "User created successfully"));
-            //return Ok();
         }
 
         //[HttpGet]

@@ -1,4 +1,4 @@
-﻿using LeadMedixCRM.Application.Features.Auth.Login.DTOs;
+﻿using LeadMedixCRM.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace LeadMedixCRM.Application.Common.Interfaces.Services
 {
-    public interface IAuthService
+    public interface ITokenService
     {
-        Task<LoginResponseDto> LoginAsync(LoginRequestDto dto);
+        string GenerateToken(User user);
     }
 }
