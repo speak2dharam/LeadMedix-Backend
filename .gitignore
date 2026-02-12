@@ -1,0 +1,87 @@
+############################
+# Build folders
+############################
+bin/
+obj/
+out/
+publish/
+
+############################
+# User-specific files
+############################
+*.user
+*.userosscache
+*.suo
+*.userprefs
+
+############################
+# Visual Studio files
+############################
+.vs/
+*.VC.db
+*.VC.opendb
+
+############################
+# Rider / VSCode
+############################
+.idea/
+.vscode/
+
+############################
+# Logs
+############################
+Logs/
+*.log
+
+############################
+# Database files (if any local DB)
+############################
+*.mdf
+*.ldf
+
+############################
+# NuGet
+############################
+*.nupkg
+.nuget/
+packages/
+
+############################
+# ASP.NET Core
+############################
+appsettings.Development.json
+appsettings.Local.json
+
+############################
+# Environment variables
+############################
+.env
+
+############################
+# OS generated files
+############################
+.DS_Store
+Thumbs.db
+
+############################
+# Test results
+############################
+TestResults/
+
+############################
+# Publish profiles
+############################
+*.pubxml
+*.publishproj
+
+############################
+# Azure artifacts
+############################
+*.azurePubxml
+
+############################
+# Coverage reports
+############################
+coverage/
+*.coverage
+*.coveragexml
