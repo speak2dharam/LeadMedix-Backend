@@ -42,7 +42,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidIssuer = jwtSettings["Issuer"],
             ValidAudience = jwtSettings["Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(jwtSettings["Key"]))
+                Encoding.UTF8.GetBytes(jwtSettings["Key"])),
+            ClockSkew = TimeSpan.Zero
         };
 
         options.Events = new JwtBearerEvents
@@ -75,15 +76,32 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     context.Fail("Token has been revoked");
                     return;
                 }
-
-                if (tokenEntity.ExpiresAt < DateTime.UtcNow)
+                if (tokenEntity.RefreshTokenExpiresAt < DateTime.UtcNow)
                 {
                     context.Fail("Token expired");
+                    //throw new ValidationException("Refresh token expired");
                 }
+                //if (tokenEntity.AccessTokenExpiresAt < DateTime.UtcNow)
+                //{
+                //    context.Fail("Token expired");
+                //}
             }
         };
     });
 //End of JWT
+//CORS Service
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngular",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials();
+        });
+});
+//End of CORS Service
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -94,6 +112,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowAngular");
 
 app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseMiddleware<ExceptionMiddleware>();

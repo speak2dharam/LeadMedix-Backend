@@ -24,7 +24,7 @@ namespace LeadMedixCRM.Infrastructure.Repositories
         public async Task AddAsync(UserToken token)
         {
             var jwtSettings = _configuration.GetSection("JwtSettings");
-            token.ExpiresAt = DateTime.UtcNow.AddMinutes(double.Parse(jwtSettings["DurationInMinutes"]));
+            //token.ExpiresAt = DateTime.UtcNow.AddMinutes(double.Parse(jwtSettings["DurationInMinutes"]));
             await _appDbContext.UserTokens.AddAsync(token);
             await _appDbContext.SaveChangesAsync();
         }
@@ -36,14 +36,32 @@ namespace LeadMedixCRM.Infrastructure.Repositories
             .ToListAsync();
         }
 
+        public Task<UserToken?> GetByAccessTokenAsync(string accessToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<UserToken?> GetByRefreshTokenAsync(string refreshToken)
+        {
+            return await _appDbContext.UserTokens
+                    .FirstOrDefaultAsync(x => x.RefreshToken == refreshToken);
+        }
+
         public async Task<UserToken?> GetByTokenAsync(string token)
         {
-            return await _appDbContext.UserTokens.FirstOrDefaultAsync(x => x.Token == token);
+            return await _appDbContext.UserTokens.FirstOrDefaultAsync(x => x.AccessToken == token);
         }
 
         public async Task RevokeAsync(UserToken token)
         {
             token.IsRevoked = true;
+            
+            _appDbContext.UserTokens.Update(token);
+            await _appDbContext.SaveChangesAsync();
+        }
+
+        public async Task UpdateAsync(UserToken token)
+        {
             _appDbContext.UserTokens.Update(token);
             await _appDbContext.SaveChangesAsync();
         }

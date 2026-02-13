@@ -33,27 +33,32 @@ namespace LeadMedixCRM.Application.Features.Auth.Login
             }
             else if (user.PasswordHash == dto.Password && user.IsActive == true)
             {
-                var getToken = _tokenService.GenerateToken(user);
-                //return _tokenService.GenerateToken(user);
+                //var accessExpiry = DateTime.UtcNow.AddMinutes(10);
+
+                var refreshExpiry = DateTime.UtcNow.AddDays(7);
+                //var refreshExpiry = DateTime.UtcNow.AddMinutes(2);
+                var accessToken = _tokenService.GenerateToken(user);
+                var refreshToken = _tokenService.GenerateRefreshToken();
+
                 var userToken = new UserToken
                 {
                     UserId = user.Id,
-                    Token = getToken,
-                    CreatedByIp = ""
+                    AccessToken = accessToken,
+                    RefreshToken = refreshToken,
+                    //AccessTokenExpiresAt = accessExpiry,
+                    RefreshTokenExpiresAt = refreshExpiry,
+                    IsRevoked = false
                 };
 
                 await _userTokenRepository.AddAsync(userToken);
 
-                return new LoginResponseDto { 
-                    Token = getToken,
-                    FirstName = user.FirstName,
-                    MiddleName = user.MiddleName,
-                    LastName = user.LastName,
+                return new LoginResponseDto
+                {
+                    AccessToken = accessToken,
+                    RefreshToken = refreshToken,
                     UserId = user.Id,
                     Email = user.Email,
-                    UserRole = user.RoleId,
-                    profilePic = ""
-
+                    UserRole = user.RoleId
                 };
             }
             else 
@@ -72,6 +77,42 @@ namespace LeadMedixCRM.Application.Features.Auth.Login
             userToken.IsRevoked = true;
 
             await _userTokenRepository.RevokeAsync(userToken);
+        }
+
+        public async Task<LoginResponseDto> RefreshTokenAsync(string refreshToken)
+        {
+            var tokenEntity = await _userTokenRepository.GetByRefreshTokenAsync(refreshToken);
+
+            if (tokenEntity == null || tokenEntity.IsRevoked)
+                throw new ValidationException("Invalid refresh token");
+
+            if (tokenEntity.RefreshTokenExpiresAt < DateTime.UtcNow)
+                throw new ValidationException("Refresh token expired");
+
+            var user = await _userRepository.GetByIdAsync(tokenEntity.UserId);
+
+            //var newAccessExpiry = DateTime.UtcNow.AddMinutes(15);
+            var newRefreshExpiry = DateTime.UtcNow.AddDays(7);
+
+            var newAccessToken = _tokenService.GenerateToken(user);
+            var newRefreshToken = _tokenService.GenerateRefreshToken();
+
+            // 🔥 ROTATION
+            tokenEntity.AccessToken = newAccessToken;
+            tokenEntity.RefreshToken = newRefreshToken;
+            //tokenEntity.AccessTokenExpiresAt = newAccessExpiry;
+            tokenEntity.RefreshTokenExpiresAt = newRefreshExpiry;
+
+            await _userTokenRepository.UpdateAsync(tokenEntity);
+
+            return new LoginResponseDto
+            {
+                AccessToken = newAccessToken,
+                RefreshToken = newRefreshToken,
+                UserId = user.Id,
+                Email = user.Email,
+                UserRole = user.RoleId
+            };
         }
     }
 }

@@ -7,13 +7,17 @@ using System.Threading.Tasks;
 
 namespace LeadMedixCRM.Domain.Entities
 {
-    public class UserToken:BaseEntity
+    public class UserToken : BaseEntity
     {
         public int UserId { get; set; }
 
-        public string Token { get; set; }
+        public string AccessToken { get; set; }
 
-        public DateTime ExpiresAt { get; set; }
+        public string RefreshToken { get; set; }
+
+        public DateTime AccessTokenExpiresAt { get; set; }
+
+        public DateTime RefreshTokenExpiresAt { get; set; }
 
         public bool IsRevoked { get; set; } = false;
 
@@ -23,4 +27,5 @@ namespace LeadMedixCRM.Domain.Entities
 
         public bool IsActive { get; set; } = true;
     }
+
 }

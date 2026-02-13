@@ -13,5 +13,8 @@ namespace LeadMedixCRM.Application.Common.Interfaces.Repositories
         Task<List<UserToken>> GetActiveTokensByUserIdAsync(int userId);
         Task RevokeAsync(UserToken token);
         Task<UserToken?> GetByTokenAsync(string token);
+        Task<UserToken?> GetByRefreshTokenAsync(string refreshToken);
+        Task<UserToken?> GetByAccessTokenAsync(string accessToken);
+        Task UpdateAsync(UserToken token);
     }
 }

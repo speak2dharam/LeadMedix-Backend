@@ -14,12 +14,15 @@ namespace LeadMedixCRM.API.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
-        public UsersController(IUserService userService) {
+        private readonly ICurrentUserService _currentUserService;
+        public UsersController(IUserService userService, ICurrentUserService currentUserService) {
             _userService = userService;
+            _currentUserService = currentUserService;
         }
         [HttpPost]
         public async Task<IActionResult> Create(CreateUserDto dto)
         {
+
             await _userService.CreateAsync(dto, 1); // replace 1 with logged-in user id
             return Ok(ApiResponse<string>.SuccessResponse(null, "User created successfully"));
         }

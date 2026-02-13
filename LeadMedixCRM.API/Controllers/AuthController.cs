@@ -43,5 +43,13 @@ namespace LeadMedixCRM.API.Controllers
             return Ok(ApiResponse<string>
                 .SuccessResponse(null, "Logged out successfully"));
         }
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh(RefreshTokenRequestDto dto)
+        {
+            var result = await _authService.RefreshTokenAsync(dto.RefreshToken);
+
+            return Ok(ApiResponse<LoginResponseDto>
+                .SuccessResponse(result, "Token refreshed successfully"));
+        }
     }
 }
