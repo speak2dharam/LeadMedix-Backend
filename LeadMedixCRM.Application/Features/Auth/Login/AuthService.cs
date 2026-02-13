@@ -2,6 +2,7 @@
 using LeadMedixCRM.Application.Common.Interfaces.Services;
 using LeadMedixCRM.Application.Exceptions;
 using LeadMedixCRM.Application.Features.Auth.Login.DTOs;
+using LeadMedixCRM.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,10 +15,12 @@ namespace LeadMedixCRM.Application.Features.Auth.Login
     {
         private readonly IUserRepository _userRepository;
         private readonly ITokenService _tokenService;
-        public AuthService(IUserRepository userRepository, ITokenService tokenService)
+        private readonly IUserTokenRepository _userTokenRepository;
+        public AuthService(IUserRepository userRepository, ITokenService tokenService, IUserTokenRepository userTokenRepository)
         {
             _userRepository = userRepository;
             _tokenService = tokenService;
+            _userTokenRepository = userTokenRepository;
         }
 
         public async Task<LoginResponseDto> LoginAsync(LoginRequestDto dto)
@@ -32,6 +35,15 @@ namespace LeadMedixCRM.Application.Features.Auth.Login
             {
                 var getToken = _tokenService.GenerateToken(user);
                 //return _tokenService.GenerateToken(user);
+                var userToken = new UserToken
+                {
+                    UserId = user.Id,
+                    Token = getToken,
+                    CreatedByIp = ""
+                };
+
+                await _userTokenRepository.AddAsync(userToken);
+
                 return new LoginResponseDto { 
                     Token = getToken,
                     FirstName = user.FirstName,
@@ -48,6 +60,18 @@ namespace LeadMedixCRM.Application.Features.Auth.Login
             {
                 throw new NotFoundException("Invalid login details");
             }
+        }
+
+        public async Task LogoutAsync(string token)
+        {
+            var userToken = await _userTokenRepository.GetByTokenAsync(token);
+
+            if (userToken == null)
+                throw new NotFoundException("Token not found");
+
+            userToken.IsRevoked = true;
+
+            await _userTokenRepository.RevokeAsync(userToken);
         }
     }
 }

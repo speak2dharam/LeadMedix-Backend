@@ -35,7 +35,7 @@ namespace LeadMedixCRM.Infrastructure.Services
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Email, user.Email),
             new Claim(ClaimTypes.Role, user.RoleId.ToString()),
-            new Claim(ClaimTypes.Name, user.FirstName+" "+user.MiddleName+ " "+ user.LastName),
+            new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
         };
 
             var token = new JwtSecurityToken(

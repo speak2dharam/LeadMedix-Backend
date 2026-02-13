@@ -1,6 +1,8 @@
 using LeadMedixCRM.API.Middleware;
 using LeadMedixCRM.Application;
+using LeadMedixCRM.Application.Common.Interfaces.Repositories;
 using LeadMedixCRM.Infrastructure;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Text;
@@ -25,28 +27,62 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 //JWT
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = "JwtBearer";
-    options.DefaultChallengeScheme = "JwtBearer";
-})
-.AddJwtBearer("JwtBearer", options =>
-{
-    var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-
-    options.TokenValidationParameters = new TokenValidationParameters
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
+        var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 
-        ValidIssuer = jwtSettings["Issuer"],
-        ValidAudience = jwtSettings["Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(jwtSettings["Key"]))
-    };
-});
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+
+            ValidIssuer = jwtSettings["Issuer"],
+            ValidAudience = jwtSettings["Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtSettings["Key"]))
+        };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnTokenValidated = async context =>
+            {
+                var tokenRepo = context.HttpContext.RequestServices
+                    .GetRequiredService<IUserTokenRepository>();
+
+                var authHeader = context.Request.Headers["Authorization"].ToString();
+
+                if (string.IsNullOrEmpty(authHeader))
+                {
+                    context.Fail("Token missing");
+                    return;
+                }
+
+                var token = authHeader.Replace("Bearer ", "");
+
+                var tokenEntity = await tokenRepo.GetByTokenAsync(token);
+
+                if (tokenEntity == null)
+                {
+                    context.Fail("Token not found in database");
+                    return;
+                }
+
+                if (tokenEntity.IsRevoked)
+                {
+                    context.Fail("Token has been revoked");
+                    return;
+                }
+
+                if (tokenEntity.ExpiresAt < DateTime.UtcNow)
+                {
+                    context.Fail("Token expired");
+                }
+            }
+        };
+    });
 //End of JWT
 var app = builder.Build();
 

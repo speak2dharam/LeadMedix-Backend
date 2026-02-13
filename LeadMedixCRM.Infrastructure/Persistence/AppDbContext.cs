@@ -14,5 +14,6 @@ namespace LeadMedixCRM.Infrastructure.Persistence
         : base(options) { }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<UserToken> UserTokens { get; set; }
     }
 }

@@ -23,6 +23,9 @@ namespace LeadMedixCRM.Infrastructure
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IUserTokenRepository, UserTokenRepository>();
+            services.AddHttpContextAccessor();
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
 
             return services;
         }

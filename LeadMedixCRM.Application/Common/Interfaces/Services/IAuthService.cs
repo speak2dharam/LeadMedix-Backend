@@ -10,5 +10,6 @@ namespace LeadMedixCRM.Application.Common.Interfaces.Services
     public interface IAuthService
     {
         Task<LoginResponseDto> LoginAsync(LoginRequestDto dto);
+        Task LogoutAsync(string token);
     }
 }
