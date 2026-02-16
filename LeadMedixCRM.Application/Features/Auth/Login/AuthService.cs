@@ -58,7 +58,11 @@ namespace LeadMedixCRM.Application.Features.Auth.Login
                     RefreshToken = refreshToken,
                     UserId = user.Id,
                     Email = user.Email,
-                    UserRole = user.RoleId
+                    UserRole = user.RoleId,
+                    FirstName=user.FirstName,
+                    MiddleName=user.MiddleName,
+                    LastName=user.LastName
+
                 };
             }
             else 
@@ -67,16 +71,16 @@ namespace LeadMedixCRM.Application.Features.Auth.Login
             }
         }
 
-        public async Task LogoutAsync(string token)
+        public async Task LogoutAsync(string refToken)
         {
-            var userToken = await _userTokenRepository.GetByTokenAsync(token);
+            var refreshToken = await _userTokenRepository.GetByRefreshTokenAsync(refToken);
 
-            if (userToken == null)
-                throw new NotFoundException("Token not found");
+            if (refreshToken == null)
+                throw new NotFoundException("Refresh token not found");
 
-            userToken.IsRevoked = true;
+            refreshToken.IsRevoked = true;
 
-            await _userTokenRepository.RevokeAsync(userToken);
+            await _userTokenRepository.RevokeAsync(refreshToken);
         }
 
         public async Task<LoginResponseDto> RefreshTokenAsync(string refreshToken)
@@ -111,7 +115,10 @@ namespace LeadMedixCRM.Application.Features.Auth.Login
                 RefreshToken = newRefreshToken,
                 UserId = user.Id,
                 Email = user.Email,
-                UserRole = user.RoleId
+                UserRole = user.RoleId,
+                FirstName = user.FirstName,
+                MiddleName = user.MiddleName,
+                LastName = user.LastName
             };
         }
     }

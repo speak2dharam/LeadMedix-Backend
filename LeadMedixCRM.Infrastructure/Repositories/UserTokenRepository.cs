@@ -49,6 +49,7 @@ namespace LeadMedixCRM.Infrastructure.Repositories
 
         public async Task<UserToken?> GetByTokenAsync(string token)
         {
+            
             return await _appDbContext.UserTokens.FirstOrDefaultAsync(x => x.AccessToken == token);
         }
 

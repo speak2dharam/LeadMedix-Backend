@@ -76,11 +76,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     context.Fail("Token has been revoked");
                     return;
                 }
-                if (tokenEntity.RefreshTokenExpiresAt < DateTime.UtcNow)
-                {
-                    context.Fail("Token expired");
-                    //throw new ValidationException("Refresh token expired");
-                }
+                //if (tokenEntity.RefreshTokenExpiresAt < DateTime.UtcNow)
+                //{
+                //    context.Fail("Token expired");
+                //}
                 //if (tokenEntity.AccessTokenExpiresAt < DateTime.UtcNow)
                 //{
                 //    context.Fail("Token expired");

@@ -23,11 +23,10 @@ namespace LeadMedixCRM.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginRequestDto dto)
         {
-            //await _authService.LoginAsync(dto); // replace 1 with logged-in user id
-
-            //return Ok(ApiResponse<string>.SuccessResponse(null, "User created successfully"));
-
             var result = await _authService.LoginAsync(dto);
+
+            SetRefreshTokenCookie(result.RefreshToken);
+            result.RefreshToken = null;
 
             return Ok(ApiResponse<LoginResponseDto>
                 .SuccessResponse(result, "Login successful"));
@@ -36,20 +35,59 @@ namespace LeadMedixCRM.API.Controllers
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
-            var token = _currentUserService.Token;
+            var refreshToken = Request.Cookies["lm_refresh"];
 
-            await _authService.LogoutAsync(token);
+            if (!string.IsNullOrWhiteSpace(refreshToken))
+                await _authService.LogoutAsync(refreshToken);
+
+            Response.Cookies.Delete("lm_refresh", GetCookieOptionsForDelete());
 
             return Ok(ApiResponse<string>
                 .SuccessResponse(null, "Logged out successfully"));
         }
+        //[Authorize]
         [HttpPost("refresh")]
-        public async Task<IActionResult> Refresh(RefreshTokenRequestDto dto)
+        public async Task<IActionResult> Refresh()
         {
-            var result = await _authService.RefreshTokenAsync(dto.RefreshToken);
+            var refreshToken = Request.Cookies["lm_refresh"];
+
+            if (string.IsNullOrWhiteSpace(refreshToken))
+                return Unauthorized(ApiResponse<string>.FailureResponse("Missing refresh token"));
+
+            var result = await _authService.RefreshTokenAsync(refreshToken);
+
+            SetRefreshTokenCookie(result.RefreshToken);
+
+            // Don't send refresh token back to frontend
+            result.RefreshToken = null;
 
             return Ok(ApiResponse<LoginResponseDto>
                 .SuccessResponse(result, "Token refreshed successfully"));
+        }
+        private void SetRefreshTokenCookie(string refreshToken)
+        {
+            var options = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,                 // HTTPS required in prod
+                SameSite = SameSiteMode.None,  // use None if frontend/backend on different domains
+                Expires = DateTimeOffset.UtcNow.AddDays(7),
+                Path = "/"
+            };
+
+            Response.Cookies.Append("lm_refresh", refreshToken, options);
+        }
+
+        private CookieOptions GetCookieOptionsForDelete()
+        {
+            return new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Expires = DateTimeOffset.UtcNow.AddDays(-1),
+                Path = "/"
+            };
         }
     }
 }
