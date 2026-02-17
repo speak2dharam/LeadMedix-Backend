@@ -1,4 +1,5 @@
-﻿using LeadMedixCRM.Application.Common.Interfaces.Repositories;
+﻿using LeadMedixCRM.Application.Common.Interfaces;
+using LeadMedixCRM.Application.Common.Interfaces.Repositories;
 using LeadMedixCRM.Application.Common.Interfaces.Services;
 using LeadMedixCRM.Infrastructure.Persistence;
 using LeadMedixCRM.Infrastructure.Repositories;
@@ -26,6 +27,14 @@ namespace LeadMedixCRM.Infrastructure
             services.AddScoped<IUserTokenRepository, UserTokenRepository>();
             services.AddHttpContextAccessor();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
+            services.AddScoped<ILeadRepository, LeadRepository>();
+            services.AddScoped<ILeadActivityRepository, LeadActivityRepository>();
+
+            services.AddScoped<IUserRoleRepository, UserRoleRepository>();
+            // If you add role CRUD:
+            services.AddScoped<IRoleRepository, RoleRepository>();
+
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;
         }

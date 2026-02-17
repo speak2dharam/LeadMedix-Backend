@@ -9,7 +9,8 @@ namespace LeadMedixCRM.Application.Common.Interfaces.Services
 {
     public interface ITokenService
     {
-        string GenerateToken(User user);
+        //string GenerateToken(User user);
+        string GenerateToken(User user, IEnumerable<string> roleCodes);
         string GenerateRefreshToken();
     }
 }

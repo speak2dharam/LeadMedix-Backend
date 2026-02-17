@@ -13,11 +13,12 @@ namespace LeadMedixCRM.Application.Features.Auth.Login.DTOs
 
         public int UserId { get; set; }
         public string Email { get; set; }
-        public int UserRole { get; set; }
+        //public int UserRole { get; set; }
 
-        public string? FirstName { get; set; }
-        public string? MiddleName { get; set; }
-        public string? LastName { get; set; }
-        public string profilePic { get; set; }
+        public string? Name { get; set; }
+        //public string? MiddleName { get; set; }
+        //public string? LastName { get; set; }
+        //public string profilePic { get; set; }
+        public List<string> Roles { get; set; } = new();
     }
 }

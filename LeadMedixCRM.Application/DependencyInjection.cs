@@ -1,5 +1,6 @@
 ﻿using LeadMedixCRM.Application.Common.Interfaces.Services;
 using LeadMedixCRM.Application.Features.Auth.Login;
+using LeadMedixCRM.Application.Features.Leads;
 using LeadMedixCRM.Application.Features.Users;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -16,6 +17,8 @@ namespace LeadMedixCRM.Application
         {
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ILeadService, LeadService>();
+
             return services;
         }
     }

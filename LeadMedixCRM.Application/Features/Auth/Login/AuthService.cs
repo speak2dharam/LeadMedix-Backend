@@ -16,11 +16,13 @@ namespace LeadMedixCRM.Application.Features.Auth.Login
         private readonly IUserRepository _userRepository;
         private readonly ITokenService _tokenService;
         private readonly IUserTokenRepository _userTokenRepository;
-        public AuthService(IUserRepository userRepository, ITokenService tokenService, IUserTokenRepository userTokenRepository)
+        private readonly IUserRoleRepository _userRoleRepository;
+        public AuthService(IUserRepository userRepository, ITokenService tokenService, IUserTokenRepository userTokenRepository, IUserRoleRepository userRoleRepository)
         {
             _userRepository = userRepository;
             _tokenService = tokenService;
             _userTokenRepository = userTokenRepository;
+            _userRoleRepository = userRoleRepository;
         }
 
         public async Task<LoginResponseDto> LoginAsync(LoginRequestDto dto)
@@ -37,7 +39,8 @@ namespace LeadMedixCRM.Application.Features.Auth.Login
 
                 var refreshExpiry = DateTime.UtcNow.AddDays(7);
                 //var refreshExpiry = DateTime.UtcNow.AddMinutes(2);
-                var accessToken = _tokenService.GenerateToken(user);
+                var roles = await _userRoleRepository.GetRoleCodesByUserIdAsync(user.Id);
+                var accessToken = _tokenService.GenerateToken(user, roles);
                 var refreshToken = _tokenService.GenerateRefreshToken();
 
                 var userToken = new UserToken
@@ -55,13 +58,11 @@ namespace LeadMedixCRM.Application.Features.Auth.Login
                 return new LoginResponseDto
                 {
                     AccessToken = accessToken,
-                    RefreshToken = refreshToken,
+                    RefreshToken= refreshToken,
                     UserId = user.Id,
                     Email = user.Email,
-                    UserRole = user.RoleId,
-                    FirstName=user.FirstName,
-                    MiddleName=user.MiddleName,
-                    LastName=user.LastName
+                    Roles = roles,
+                    Name = $"{user.FirstName} {user.LastName}"
 
                 };
             }
@@ -98,7 +99,8 @@ namespace LeadMedixCRM.Application.Features.Auth.Login
             //var newAccessExpiry = DateTime.UtcNow.AddMinutes(15);
             var newRefreshExpiry = DateTime.UtcNow.AddDays(7);
 
-            var newAccessToken = _tokenService.GenerateToken(user);
+            var roles = await _userRoleRepository.GetRoleCodesByUserIdAsync(user.Id);
+            var newAccessToken = _tokenService.GenerateToken(user, roles);
             var newRefreshToken = _tokenService.GenerateRefreshToken();
 
             // 🔥 ROTATION
@@ -112,13 +114,11 @@ namespace LeadMedixCRM.Application.Features.Auth.Login
             return new LoginResponseDto
             {
                 AccessToken = newAccessToken,
-                RefreshToken = newRefreshToken,
+                RefreshToken= newRefreshToken,
                 UserId = user.Id,
                 Email = user.Email,
-                UserRole = user.RoleId,
-                FirstName = user.FirstName,
-                MiddleName = user.MiddleName,
-                LastName = user.LastName
+                Roles = roles,
+                Name = $"{user.FirstName} {user.LastName}"
             };
         }
     }
