@@ -7,13 +7,10 @@ using System.Threading.Tasks;
 
 namespace LeadMedixCRM.Domain.Entities
 {
-    public class Country : BaseEntity
+    public class City : BaseEntity
     {
+        public int CountryId { get; set; }
         public string Name { get; set; } = default!;
-        public string? Iso2 { get; set; }
-        public string? Iso3 { get; set; }
-        public string PhoneCode { get; set; } = default!; // +91, +971
-        public string? CurrencyCode { get; set; } // INR, USD
         public bool IsActive { get; set; } = true;
     }
 }

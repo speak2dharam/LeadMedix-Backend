@@ -1,6 +1,7 @@
 ﻿using LeadMedixCRM.Application.Common.Interfaces;
 using LeadMedixCRM.Application.Common.Interfaces.Repositories;
 using LeadMedixCRM.Application.Common.Interfaces.Services;
+using LeadMedixCRM.Infrastructure.Files;
 using LeadMedixCRM.Infrastructure.Persistence;
 using LeadMedixCRM.Infrastructure.Repositories;
 using LeadMedixCRM.Infrastructure.Services;
@@ -33,6 +34,12 @@ namespace LeadMedixCRM.Infrastructure
             services.AddScoped<IUserRoleRepository, UserRoleRepository>();
             // If you add role CRUD:
             services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<IFileStorage, LocalFileStorage>();
+
+            services.AddScoped<ICountryRepository, CountryRepository>();
+            services.AddScoped<ICityRepository, CityRepository>();
+            services.AddScoped<IHospitalRepository, HospitalRepository>();
+            services.AddScoped<IMediaFileRepository, MediaFileRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 

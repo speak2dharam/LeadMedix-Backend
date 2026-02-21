@@ -36,13 +36,18 @@ namespace LeadMedixCRM.Infrastructure.Services
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}")
+                //new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}".Trim())
             };
-
+            if (!string.IsNullOrWhiteSpace(user.Email))
+                claims.Add(new Claim(ClaimTypes.Email, user.Email));
             // ✅ Add one Role claim per role
-            foreach (var role in roleCodes.Distinct())
+            //if (!string.IsNullOrWhiteSpace(user.Email))
+            //    claims.Add(new Claim(ClaimTypes.Email, user.Email));
+            foreach (var role in roleCodes.Where(r => !string.IsNullOrWhiteSpace(r)).Distinct())
+            {
                 claims.Add(new Claim(ClaimTypes.Role, role));
+            }
 
             var token = new JwtSecurityToken(
                 issuer: jwtSettings["Issuer"],

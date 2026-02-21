@@ -1,6 +1,7 @@
 ﻿using LeadMedixCRM.API.Common;
 using LeadMedixCRM.Application.Common.Interfaces.Services;
 using LeadMedixCRM.Application.Common.Pagination;
+using LeadMedixCRM.Application.Common.Security;
 using LeadMedixCRM.Application.Features.Users.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -19,6 +20,7 @@ namespace LeadMedixCRM.API.Controllers
             _userService = userService;
             _currentUserService = currentUserService;
         }
+        [Authorize(Policy = Policies.MasterDataEdit)]
         [HttpPost]
         public async Task<IActionResult> Create(CreateUserDto dto)
         {
@@ -35,6 +37,7 @@ namespace LeadMedixCRM.API.Controllers
         //    return Ok(ApiResponse<List<UserResponseDto>>
         //        .SuccessResponse(users, "Users fetched successfully"));
         //}
+        [Authorize(Policy = Policies.MasterDataView)]
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] PaginationRequest request)
         {

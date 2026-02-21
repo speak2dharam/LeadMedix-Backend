@@ -5,6 +5,7 @@ using LeadMedixCRM.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using System.Security.Claims;
 using System.Text;
 
 Log.Logger = new LoggerConfiguration()
@@ -43,6 +44,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidAudience = jwtSettings["Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(jwtSettings["Key"])),
+
+            RoleClaimType = ClaimTypes.Role,
+            NameClaimType = ClaimTypes.NameIdentifier,
+
             ClockSkew = TimeSpan.Zero
         };
 
@@ -88,6 +93,19 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 //End of JWT
+// Authorization Policies
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("MasterData.View", policy =>
+        policy.RequireAuthenticatedUser());
+
+    options.AddPolicy("MasterData.Edit", policy =>
+        policy.RequireRole("ADMIN", "MANAGER", "COORDINATOR", "DIGITAL_MARKETING"));
+
+    // optional
+    options.AddPolicy("MasterData.Approve", policy =>
+        policy.RequireRole("ADMIN", "MANAGER"));
+});
 //CORS Service
 builder.Services.AddCors(options =>
 {
@@ -111,6 +129,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseStaticFiles();
 
 app.UseCors("AllowAngular");
 

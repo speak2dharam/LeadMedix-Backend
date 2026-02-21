@@ -32,7 +32,12 @@ namespace LeadMedixCRM.Infrastructure.Repositories
                 .Select(r => r.Code)
                 .ToListAsync();
 
-            return roleCodes;
+            // Normalize here
+            return roleCodes
+                .Where(r => !string.IsNullOrWhiteSpace(r))
+                .Select(r => r.Trim().ToUpperInvariant())
+                .Distinct()
+                .ToList();
         }
 
         public async Task AssignRoleAsync(int userId, int roleId)

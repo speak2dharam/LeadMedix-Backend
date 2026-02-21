@@ -40,6 +40,7 @@ namespace LeadMedixCRM.Application.Features.Auth.Login
                 var refreshExpiry = DateTime.UtcNow.AddDays(7);
                 //var refreshExpiry = DateTime.UtcNow.AddMinutes(2);
                 var roles = await _userRoleRepository.GetRoleCodesByUserIdAsync(user.Id);
+
                 var accessToken = _tokenService.GenerateToken(user, roles);
                 var refreshToken = _tokenService.GenerateRefreshToken();
 

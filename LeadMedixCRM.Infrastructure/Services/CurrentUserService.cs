@@ -29,8 +29,15 @@ namespace LeadMedixCRM.Infrastructure.Services
         public string? Name =>
             User?.FindFirstValue(ClaimTypes.Name);
 
-        public string? Role =>
-            User?.FindFirstValue(ClaimTypes.Role);
+        //public string? Role =>
+        //    User?.FindFirstValue(ClaimTypes.Role);
+        public List<string> Roles =>
+            User?.Claims
+                .Where(c => c.Type == ClaimTypes.Role)
+                .Select(c => c.Value)
+                .Distinct()
+                .ToList()
+            ?? new List<string>();
 
         public string? Token =>
             _contextAccessor.HttpContext?

@@ -15,7 +15,7 @@ namespace LeadMedixCRM.Infrastructure.Persistence
 
         public DbSet<User> Users { get; set; }
         public DbSet<UserToken> UserTokens { get; set; }
-        public DbSet<Country> Countries { get; set; }
+        //public DbSet<Country> Countries { get; set; }
         public DbSet<TreatmentCategory> TreatmentCategories { get; set; }
         public DbSet<Treatment> Treatments { get; set; }
         public DbSet<LeadSource> LeadSources { get; set; }
@@ -24,6 +24,11 @@ namespace LeadMedixCRM.Infrastructure.Persistence
         public DbSet<LeadActivity> LeadActivities { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
+
+        public DbSet<Country> Countries => Set<Country>();
+        public DbSet<City> Cities => Set<City>();
+        public DbSet<Hospital> Hospitals => Set<Hospital>();
+        public DbSet<MediaFile> MediaFiles => Set<MediaFile>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

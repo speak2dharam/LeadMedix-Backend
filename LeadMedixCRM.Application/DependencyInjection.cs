@@ -1,6 +1,8 @@
 ﻿using LeadMedixCRM.Application.Common.Interfaces.Services;
 using LeadMedixCRM.Application.Features.Auth.Login;
+using LeadMedixCRM.Application.Features.Hospitals;
 using LeadMedixCRM.Application.Features.Leads;
+using LeadMedixCRM.Application.Features.MasterData;
 using LeadMedixCRM.Application.Features.Users;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -18,6 +20,9 @@ namespace LeadMedixCRM.Application
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ILeadService, LeadService>();
+
+            services.AddScoped<IMasterDataService, MasterDataService>();
+            services.AddScoped<IHospitalService, HospitalService>();
 
             return services;
         }

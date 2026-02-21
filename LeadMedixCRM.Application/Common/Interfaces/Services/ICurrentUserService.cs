@@ -11,7 +11,8 @@ namespace LeadMedixCRM.Application.Common.Interfaces.Services
         int? UserId { get; }
         string? Email { get; }
         string? Name { get; }
-        string? Role { get; }
+        //string? Role { get; }
+        List<string> Roles { get; }
         string? Token { get; }
     }
 }
