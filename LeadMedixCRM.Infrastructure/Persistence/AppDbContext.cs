@@ -1,4 +1,6 @@
 ﻿using LeadMedixCRM.Domain.Entities;
+using LeadMedixCRM.Domain.Entities.Leads;
+using LeadMedixCRM.Domain.Entities.Masters;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -19,9 +21,24 @@ namespace LeadMedixCRM.Infrastructure.Persistence
         public DbSet<TreatmentCategory> TreatmentCategories { get; set; }
         public DbSet<Treatment> Treatments { get; set; }
         public DbSet<LeadSource> LeadSources { get; set; }
-
+        //Lead
         public DbSet<Lead> Leads { get; set; }
+        public DbSet<LeadAssignmentHistory> leadAssignmentHistories { get; set; }
+        public DbSet<LeadHospitalReview> leadHospitalReviews { get; set; }
+        public DbSet<LeadQuotation> leadQuotations { get; set; }
+        public DbSet<LeadRequirement> leadRequirements { get; set; }
+        public DbSet<LeadVIL> leadVILs { get; set; }
         public DbSet<LeadActivity> LeadActivities { get; set; }
+        //Masters 
+        public DbSet<HospitalReviewStatusMaster> hospitalReviewStatusMasters { get; set; }
+        public DbSet<LeadCloseReasonMaster> leadCloseReasonMasters { get; set; }
+        public DbSet<LeadDiscardReasonMaster> leadDiscardReasonMasters { get; set; }
+        public DbSet<LeadRequirementStatusMaster> leadRequirementStatusMasters { get; set; }
+        public DbSet<LeadRequirementTypeMaster> leadRequirementTypeMasters { get; set; }
+        public DbSet<LeadStatusMaster> leadStatusMasters { get; set; }
+        public DbSet<QuotationStatusMaster> quotationStatusMasters { get; set; }
+        public DbSet<VILStatusMaster> vILStatusMasters { get; set; }
+        //end master
         public DbSet<Role> Roles { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
 

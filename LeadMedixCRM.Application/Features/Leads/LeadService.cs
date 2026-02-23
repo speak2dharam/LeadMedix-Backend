@@ -5,6 +5,7 @@ using LeadMedixCRM.Application.Common.Pagination;
 using LeadMedixCRM.Application.Exceptions;
 using LeadMedixCRM.Application.Features.Leads.DTOs;
 using LeadMedixCRM.Domain.Entities;
+using LeadMedixCRM.Domain.Entities.Leads;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,7 +1,7 @@
 ﻿using LeadMedixCRM.Application.Common.Interfaces.Repositories;
 using LeadMedixCRM.Application.Common.Pagination;
 using LeadMedixCRM.Application.Features.Leads.DTOs;
-using LeadMedixCRM.Domain.Entities;
+using LeadMedixCRM.Domain.Entities.Leads;
 using LeadMedixCRM.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System;
