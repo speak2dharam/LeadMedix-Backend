@@ -29,6 +29,14 @@ namespace LeadMedixCRM.Infrastructure.Persistence
         public DbSet<City> Cities => Set<City>();
         public DbSet<Hospital> Hospitals => Set<Hospital>();
         public DbSet<MediaFile> MediaFiles => Set<MediaFile>();
+        public DbSet<Doctor> Doctors => Set<Doctor>();
+        public DbSet<DoctorHospitalHistory> DoctorHospitalHistories => Set<DoctorHospitalHistory>();
+        public DbSet<DoctorEducation> DoctorEducation => Set<DoctorEducation>();
+        public DbSet<DoctorMembership> DoctorMembership => Set<DoctorMembership>();
+        public DbSet<DoctorSpecialization> DoctorSpecialization => Set<DoctorSpecialization>();
+        public DbSet<DoctorAward> DoctorAward => Set<DoctorAward>();
+        public DbSet<DoctorPublication> DoctorPublication => Set<DoctorPublication>();
+        public DbSet<DoctorFellowship> DoctorFellowship => Set<DoctorFellowship>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

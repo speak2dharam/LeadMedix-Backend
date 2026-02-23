@@ -41,6 +41,16 @@ namespace LeadMedixCRM.Infrastructure
             services.AddScoped<IHospitalRepository, HospitalRepository>();
             services.AddScoped<IMediaFileRepository, MediaFileRepository>();
 
+            services.AddScoped<IDoctorRepository, DoctorRepository>();
+            services.AddScoped<IDoctorHospitalHistoryRepository, DoctorHospitalHistoryRepository>();
+            services.AddScoped<IDoctorEducationRepository, DoctorEducationRepository>();
+            services.AddScoped<IDoctorMembershipRepository, DoctorMembershipRepository>();
+            services.AddScoped<IDoctorSpecializationRepository, DoctorSpecializationRepository>();
+            services.AddScoped<IDoctorAwardRepository, DoctorAwardRepository>();
+            services.AddScoped<IDoctorPublicationRepository, DoctorPublicationRepository>();
+            services.AddScoped<IDoctorFellowshipRepository, DoctorFellowshipRepository>();
+            services.AddScoped<ILookupRepository, LookupRepository>();
+
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;
