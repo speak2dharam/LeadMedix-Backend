@@ -6,13 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LeadMedixCRM.Infrastructure.Files
+namespace LeadMedixCRM.Infrastructure.Services
 {
-    public class LocalFileStorage : IFileStorage
+    public class FileStorageService:IFileStorageService
     {
         private readonly IWebHostEnvironment _env;
 
-        public LocalFileStorage(IWebHostEnvironment env)
+        public FileStorageService(IWebHostEnvironment env)
         {
             _env = env;
         }

@@ -1,4 +1,5 @@
-﻿using LeadMedixCRM.Application.Common.Interfaces.Services;
+﻿using LeadMedixCRM.API.Common;
+using LeadMedixCRM.Application.Common.Interfaces.Services;
 using LeadMedixCRM.Application.Features.MasterData.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -51,5 +52,71 @@ namespace LeadMedixCRM.API.Controllers
         [HttpDelete("cities/{id:int}")]
         public async Task<IActionResult> DeleteCity(int id)
             => (await _service.DeleteCityAsync(id)) ? Ok() : NotFound();
+        // ✅ GET: /api/MasterData/accreditations
+        [HttpGet("accreditations")]
+        public async Task<IActionResult> GetAccreditations()
+        {
+            var data = await _service.GetAccreditationsAsync();
+            return Ok(ApiResponse<List<AccreditationDto>>.SuccessResponse(data, "Accreditations fetched successfully."));
+        }
+
+        // ✅ POST: /api/MasterData/accreditations
+        [HttpPost("accreditations")]
+        public async Task<IActionResult> CreateAccreditation([FromBody] AccreditationDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.Name))
+                return BadRequest(ApiResponse<int>.FailureResponse("Name is required."));
+
+            var id = await _service.CreateAccreditationAsync(dto);
+            return Ok(ApiResponse<int>.SuccessResponse(id, "Accreditation created successfully."));
+        }
+
+        // ✅ PUT: /api/MasterData/accreditations/{id}
+        [HttpPut("accreditations/{id:int}")]
+        public async Task<IActionResult> UpdateAccreditation(int id, [FromBody] AccreditationDto dto)
+        {
+            if (id <= 0)
+                return BadRequest(ApiResponse<bool>.FailureResponse("Invalid id."));
+
+            if (string.IsNullOrWhiteSpace(dto.Name))
+                return BadRequest(ApiResponse<bool>.FailureResponse("Name is required."));
+
+            var ok = await _service.UpdateAccreditationAsync(id, dto);
+
+            if (!ok)
+                return NotFound(ApiResponse<bool>.FailureResponse("Accreditation not found."));
+
+            return Ok(ApiResponse<bool>.SuccessResponse(true, "Accreditation updated successfully."));
+        }
+
+        // ✅ DELETE: /api/MasterData/accreditations/{id}
+        [HttpDelete("accreditations/{id:int}")]
+        public async Task<IActionResult> DeleteAccreditation(int id)
+        {
+            if (id <= 0)
+                return BadRequest(ApiResponse<bool>.FailureResponse("Invalid id."));
+
+            var ok = await _service.DeleteAccreditationAsync(id);
+
+            if (!ok)
+                return NotFound(ApiResponse<bool>.FailureResponse("Accreditation not found."));
+
+            return Ok(ApiResponse<bool>.SuccessResponse(true, "Accreditation deleted successfully."));
+        }
+        [Authorize(Policy = "MasterData.Edit")]
+        [HttpPost("accreditations/{id:int}/logo")]
+        public async Task<IActionResult> UploadAccredationLogo(int id, IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest(ApiResponse<string>.FailureResponse("File missing"));
+
+            await using var stream = file.OpenReadStream();
+            var url = await _service.UploadAccredationLogoAsync(id, stream, file.FileName, file.ContentType);
+
+            if (url == null)
+                return NotFound(ApiResponse<string>.FailureResponse("Hospital not found"));
+
+            return Ok(ApiResponse<string>.SuccessResponse(url, "Logo uploaded successfully"));
+        }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LeadMedixCRM.Application.Common.Interfaces.Services
 {
-    public interface IFileStorage
+    public interface IFileStorageService
     {
         Task<(string relativePath, string fileName, string contentType, long size)> SaveAsync(
             Stream stream,

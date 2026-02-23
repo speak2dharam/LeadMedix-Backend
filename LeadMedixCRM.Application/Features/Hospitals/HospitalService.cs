@@ -15,13 +15,16 @@ namespace LeadMedixCRM.Application.Features.Hospitals
     {
         private readonly IHospitalRepository _hospitals;
         private readonly IMediaFileRepository _media;
-        private readonly IFileStorage _files;
+        private readonly IFileStorageService _files;
         private readonly ICurrentUserService _current;
         private readonly ICountryRepository _countryRepo;
         private readonly ICityRepository _cityRepo;
+        private readonly IHospitalAccreditationRepository _hospitalAccreditationRepo;
+        private readonly IAccreditationRepository? _accreditationRepo;
 
-        public HospitalService(IHospitalRepository hospitals, IMediaFileRepository media, IFileStorage files, ICurrentUserService current,
-            ICountryRepository countryRepository,ICityRepository cityRepository)
+        public HospitalService(IHospitalRepository hospitals, IMediaFileRepository media, IFileStorageService files, ICurrentUserService current,
+            ICountryRepository countryRepository,ICityRepository cityRepository, IHospitalAccreditationRepository hospitalAccreditationRepo, 
+            IAccreditationRepository? accreditationRepo)
         {
             _hospitals = hospitals;
             _media = media;
@@ -29,6 +32,8 @@ namespace LeadMedixCRM.Application.Features.Hospitals
             _current = current;
             _countryRepo = countryRepository;
             _cityRepo = cityRepository;
+            _hospitalAccreditationRepo = hospitalAccreditationRepo;
+            _accreditationRepo = accreditationRepo;
         }
 
         public async Task<PaginatedResponse<HospitalListItemDto>> GetPagedAsync(PaginationRequest request)
@@ -274,6 +279,101 @@ namespace LeadMedixCRM.Application.Features.Hospitals
             });
 
             return saved.relativePath;
+        }
+        public async Task<bool> UpsertAccreditationsAsync(int hospitalId, List<HospitalAccreditationUpsertDto> items)
+        {
+            // Soft approach: upsert each mapping; not deleting missing ones automatically.
+            foreach (var dto in items)
+            {
+                // ensure accreditation exists
+                var acc = await _accreditationRepo.GetByIdAsync(dto.AccreditationId);
+                if (acc == null) throw new Exception($"AccreditationId {dto.AccreditationId} not found.");
+
+                var existing = await _hospitalAccreditationRepo.GetByHospitalAndAccreditationAsync(hospitalId, dto.AccreditationId);
+
+                if (existing == null)
+                {
+                    var entity = new HospitalAccreditation
+                    {
+                        HospitalId = hospitalId,
+                        AccreditationId = dto.AccreditationId,
+                        CertificateNumber = dto.CertificateNumber,
+                        AccreditedOn = dto.AccreditedOn,
+                        ValidTill = dto.ValidTill,
+                        IsActive = dto.IsActive,
+
+                        CreatedAt = DateTime.UtcNow,
+                        CreatedBy = _current.UserId
+                    };
+
+                    await _hospitalAccreditationRepo.AddAsync(entity);
+                }
+                else
+                {
+                    existing.CertificateNumber = dto.CertificateNumber;
+                    existing.AccreditedOn = dto.AccreditedOn;
+                    existing.ValidTill = dto.ValidTill;
+                    existing.IsActive = dto.IsActive;
+
+                    existing.UpdatedAt = DateTime.UtcNow;
+
+                    _hospitalAccreditationRepo.Update(existing);
+                }
+            }
+
+            return true;
+        }
+
+        public async Task<List<HospitalAccreditationViewDto>> GetAccreditationsAsync(int hospitalId)
+        {
+            var result = new List<HospitalAccreditationViewDto>();
+
+            var mappings = await _hospitalAccreditationRepo.GetByHospitalIdAsync(hospitalId);
+
+            if (mappings == null || mappings.Count == 0)
+                return result;
+
+            var accIds = mappings.Select(x => x.AccreditationId).Distinct().ToList();
+
+            var accList = new List<Accreditation>();
+            foreach (var id in accIds)
+            {
+                var acc = await _accreditationRepo.GetByIdAsync(id);
+                if (acc != null) accList.Add(acc);
+            }
+
+            // 3) Fetch logos from MediaFiles for these accreditation ids
+            var logos = await _media.GetPrimaryListAsync(
+                entityType: "Accredation",   // MUST match DB
+                entityIds: accIds,
+                mediaType: "Logo"              // MUST match DB
+            );
+            var logoMap = logos.ToDictionary(x => x.EntityId, x => x);
+
+            foreach (var map in mappings)
+            {
+                var acc = accList.FirstOrDefault(x => x.Id == map.AccreditationId);
+                if (acc == null) continue;
+
+                logoMap.TryGetValue(acc.Id, out var logo);
+
+                result.Add(new HospitalAccreditationViewDto
+                {
+                    AccreditationId = acc.Id,
+                    AccreditationName = acc.Name,
+                    AccreditationCode = acc.Code,
+
+                    LogoUrl = logo?.RelativePath,
+                    LogoMediaFileId = logo?.Id,
+
+                    CertificateNumber = map.CertificateNumber,
+                    AccreditedOn = map.AccreditedOn,
+                    ValidTill = map.ValidTill,
+                    IsActive = map.IsActive
+                });
+            }
+
+            return result;
         }
     }
 }

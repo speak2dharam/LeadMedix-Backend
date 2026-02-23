@@ -18,5 +18,8 @@ namespace LeadMedixCRM.Application.Common.Interfaces.Services
         Task<bool> DeleteAsync(int id);
 
         Task<string?> UploadLogoAsync(int hospitalId, Stream stream, string originalFileName, string contentType);
+
+        Task<bool> UpsertAccreditationsAsync(int hospitalId, List<HospitalAccreditationUpsertDto> items);
+        Task<List<HospitalAccreditationViewDto>> GetAccreditationsAsync(int hospitalId);
     }
 }

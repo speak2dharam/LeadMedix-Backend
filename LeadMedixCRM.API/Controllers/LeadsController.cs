@@ -33,7 +33,7 @@ namespace LeadMedixCRM.API.Controllers
 
         }
 
-        [Authorize(Roles = "Admin,Coordinator")]
+        [Authorize(Policy = "MasterData.Edit")]
         [HttpGet]
         public async Task<IActionResult> Search([FromQuery] LeadFilterRequest request, CancellationToken ct)
         {

@@ -1,4 +1,5 @@
-﻿using LeadMedixCRM.Application.Features.MasterData.DTOs;
+﻿using LeadMedixCRM.Application.Common.Pagination;
+using LeadMedixCRM.Application.Features.MasterData.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,5 +20,12 @@ namespace LeadMedixCRM.Application.Common.Interfaces.Services
         Task<int> CreateCityAsync(CityDto dto);
         Task<bool> UpdateCityAsync(int id, CityDto dto);
         Task<bool> DeleteCityAsync(int id);
+
+        ///Accreditation
+        Task<List<AccreditationDto>> GetAccreditationsAsync();
+        Task<int> CreateAccreditationAsync(AccreditationDto dto);
+        Task<bool> UpdateAccreditationAsync(int id, AccreditationDto dto);
+        Task<bool> DeleteAccreditationAsync(int id);
+        Task<string?> UploadAccredationLogoAsync(int AccredationID, Stream stream, string originalFileName, string contentType);
     }
 }

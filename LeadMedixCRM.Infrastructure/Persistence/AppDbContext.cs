@@ -27,7 +27,11 @@ namespace LeadMedixCRM.Infrastructure.Persistence
 
         public DbSet<Country> Countries => Set<Country>();
         public DbSet<City> Cities => Set<City>();
+
         public DbSet<Hospital> Hospitals => Set<Hospital>();
+        public DbSet<Accreditation> Accreditations { get; set; }
+        public DbSet<HospitalAccreditation> HospitalAccreditations { get; set; }
+
         public DbSet<MediaFile> MediaFiles => Set<MediaFile>();
         public DbSet<Doctor> Doctors => Set<Doctor>();
         public DbSet<DoctorHospitalHistory> DoctorHospitalHistories => Set<DoctorHospitalHistory>();

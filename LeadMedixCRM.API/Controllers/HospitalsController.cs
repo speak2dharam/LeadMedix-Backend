@@ -83,5 +83,23 @@ namespace LeadMedixCRM.API.Controllers
 
             return Ok(ApiResponse<string>.SuccessResponse(url, "Logo uploaded successfully"));
         }
+        [HttpGet("Hospitals/{id:int}/accreditations")]
+        public async Task<IActionResult> GetAccreditations(int id)
+        {
+            var data = await _service.GetAccreditationsAsync(id);
+
+            // If you want "hospital not found" strict behavior, uncomment below:
+            // if (data == null) return NotFound(new ErrorResponse("Hospital not found"));
+            return Ok(ApiResponse<List<HospitalAccreditationViewDto>>.SuccessResponse(data, "Hospital accreditations fetched successfully"));
+        }
+        [HttpPut("Hospitals/{id:int}/accreditations")]
+        public async Task<IActionResult> UpsertAccreditations(int id,[FromBody] List<HospitalAccreditationUpsertDto> items)
+        {
+            items ??= new List<HospitalAccreditationUpsertDto>();
+
+            var ok = await _service.UpsertAccreditationsAsync(id, items);
+
+            return Ok(ApiResponse<string>.SuccessResponse(null, "Hospital accreditations updated successfully"));
+        }
     }
 }
