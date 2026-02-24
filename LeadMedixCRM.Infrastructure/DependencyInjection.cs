@@ -54,6 +54,7 @@ namespace LeadMedixCRM.Infrastructure
 
             services.AddScoped(typeof(IMasterRepository<>), typeof(MasterRepository<>));
             services.AddScoped<ILeadRequirementRepository, LeadRequirementRepository>();
+            services.AddScoped<ILeadHospitalReviewRepository, LeadHospitalReviewRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 

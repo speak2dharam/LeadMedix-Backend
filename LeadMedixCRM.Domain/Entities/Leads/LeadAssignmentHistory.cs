@@ -9,14 +9,11 @@ namespace LeadMedixCRM.Domain.Entities.Leads
 {
     public class LeadAssignmentHistory : BaseEntity
     {
-        public int LeadId { get; set; } // FK concept only
+        public int LeadId { get; set; }
 
-        public int? FromUserId { get; set; } // nullable for first assignment
+        public int? FromUserId { get; set; }
         public int ToUserId { get; set; }
 
         public string? Reason { get; set; }
-
-        public DateTime ChangedAt { get; set; } = DateTime.UtcNow;
-        public int ChangedByUserId { get; set; }
     }
 }

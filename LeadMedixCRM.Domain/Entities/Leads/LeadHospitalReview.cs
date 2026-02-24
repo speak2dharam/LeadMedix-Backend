@@ -20,5 +20,5 @@ namespace LeadMedixCRM.Domain.Entities.Leads
         public string? Remarks { get; set; }
 
         public bool IsSelected { get; set; } = false; // chosen hospital for next steps (optional)
-    }
+    }   
 }
