@@ -16,7 +16,7 @@ namespace LeadMedixCRM.API.Controllers
 
         public LeadsController(ILeadService service) => _service = service;
 
-        [Authorize(Roles = "Admin,Coordinator")]
+        [Authorize(Policy = "MasterData.Edit")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateLeadDto dto, CancellationToken ct)
         {
