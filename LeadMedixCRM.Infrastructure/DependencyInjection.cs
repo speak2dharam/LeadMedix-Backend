@@ -52,6 +52,9 @@ namespace LeadMedixCRM.Infrastructure
             services.AddScoped<IDoctorFellowshipRepository, DoctorFellowshipRepository>();
             services.AddScoped<ILookupRepository, LookupRepository>();
 
+            services.AddScoped(typeof(IMasterRepository<>), typeof(MasterRepository<>));
+            services.AddScoped<ILeadRequirementRepository, LeadRequirementRepository>();
+
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;

@@ -90,6 +90,63 @@ namespace LeadMedixCRM.Infrastructure.Persistence
             // prevent duplicates logically (even without FK)
             modelBuilder.Entity<UserRole>().HasIndex(x => new { x.UserId, x.RoleId }).IsUnique();
             modelBuilder.Entity<Role>().HasIndex(x => x.Code).IsUnique();
+
+            modelBuilder.Entity<LeadStatusMaster>(e =>
+            {
+                e.ToTable("LeadStatusMasters");
+                e.Property(x => x.Name).HasMaxLength(200).IsRequired();
+                e.Property(x => x.Code).HasMaxLength(100).IsRequired();
+            });
+
+            modelBuilder.Entity<LeadRequirementTypeMaster>(e =>
+            {
+                e.ToTable("LeadRequirementTypeMasters");
+                e.Property(x => x.Name).HasMaxLength(200).IsRequired();
+                e.Property(x => x.Code).HasMaxLength(100).IsRequired();
+            });
+
+            modelBuilder.Entity<LeadRequirementStatusMaster>(e =>
+            {
+                e.ToTable("LeadRequirementStatusMasters");
+                e.Property(x => x.Name).HasMaxLength(200).IsRequired();
+                e.Property(x => x.Code).HasMaxLength(100).IsRequired();
+            });
+
+            modelBuilder.Entity<HospitalReviewStatusMaster>(e =>
+            {
+                e.ToTable("HospitalReviewStatusMasters");
+                e.Property(x => x.Name).HasMaxLength(200).IsRequired();
+                e.Property(x => x.Code).HasMaxLength(100).IsRequired();
+            });
+
+            modelBuilder.Entity<QuotationStatusMaster>(e =>
+            {
+                e.ToTable("QuotationStatusMasters");
+                e.Property(x => x.Name).HasMaxLength(200).IsRequired();
+                e.Property(x => x.Code).HasMaxLength(100).IsRequired();
+            });
+
+            modelBuilder.Entity<VILStatusMaster>(e =>
+            {
+                e.ToTable("VILStatusMasters");
+                e.Property(x => x.Name).HasMaxLength(200).IsRequired();
+                e.Property(x => x.Code).HasMaxLength(100).IsRequired();
+            });
+
+            modelBuilder.Entity<LeadDiscardReasonMaster>(e =>
+            {
+                e.ToTable("LeadDiscardReasonMasters");
+                e.Property(x => x.Name).HasMaxLength(200).IsRequired();
+                e.Property(x => x.Code).HasMaxLength(100).IsRequired();
+            });
+
+            modelBuilder.Entity<LeadCloseReasonMaster>(e =>
+            {
+                e.ToTable("LeadCloseReasonMasters");
+                e.Property(x => x.Name).HasMaxLength(200).IsRequired();
+                e.Property(x => x.Code).HasMaxLength(100).IsRequired();
+            });
+            //LeadMastersSeed.Seed(modelBuilder);
         }
 
     }

@@ -18,11 +18,13 @@ namespace LeadMedixCRM.Application.Features.Leads
     {
         private readonly IUnitOfWork _uow;
         private readonly ICurrentUserService _currentUser;
+        private readonly ILeadMastersService _leadMasterService;
 
-        public LeadService(IUnitOfWork uow, ICurrentUserService currentUser)
+        public LeadService(IUnitOfWork uow, ICurrentUserService currentUser, ILeadMastersService leadMasterService)
         {
             _uow = uow;
             _currentUser = currentUser;
+            _leadMasterService = leadMasterService;
         }
 
         public async Task<(LeadResponseDto? Created, DuplicateLeadResponseDto? Duplicate)> CreateAsync(CreateLeadDto dto, CancellationToken ct = default)
