@@ -49,5 +49,7 @@ namespace LeadMedixCRM.Domain.Entities.Leads
         public int? CloseReasonId { get; set; }         // LeadCloseReasonMaster.Id
         public string? CloseRemarks { get; set; }
         public DateTime? ClosedAt { get; set; }
+        public int? StatusBeforeDiscard { get; set; }
+        public int? StatusBeforeClose { get; set; }
     }
 }

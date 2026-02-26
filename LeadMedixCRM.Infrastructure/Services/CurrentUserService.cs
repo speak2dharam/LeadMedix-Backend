@@ -31,10 +31,19 @@ namespace LeadMedixCRM.Infrastructure.Services
 
         //public string? Role =>
         //    User?.FindFirstValue(ClaimTypes.Role);
+        //public List<string> Roles =>
+        //    User?.Claims
+        //        .Where(c => c.Type == ClaimTypes.Role)
+        //        .Select(c => c.Value)
+        //        .Distinct()
+        //        .ToList()
+        //    ?? new List<string>();
         public List<string> Roles =>
             User?.Claims
                 .Where(c => c.Type == ClaimTypes.Role)
-                .Select(c => c.Value)
+                .Select(c => (c.Value ?? "").Trim())
+                .Where(v => !string.IsNullOrWhiteSpace(v))
+                .Select(v => v.ToUpperInvariant())
                 .Distinct()
                 .ToList()
             ?? new List<string>();

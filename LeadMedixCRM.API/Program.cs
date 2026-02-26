@@ -1,6 +1,7 @@
 using LeadMedixCRM.API.Middleware;
 using LeadMedixCRM.Application;
 using LeadMedixCRM.Application.Common.Interfaces.Repositories;
+using LeadMedixCRM.Application.Common.Security;
 using LeadMedixCRM.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -94,18 +95,35 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 //End of JWT
 // Authorization Policies
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("MasterData.View", policy =>
-        policy.RequireAuthenticatedUser());
+//builder.Services.AddAuthorization(options =>
+//{
+//    options.AddPolicy("MasterData.View", policy =>
+//        policy.RequireAuthenticatedUser());
 
-    options.AddPolicy("MasterData.Edit", policy =>
-        policy.RequireRole("ADMIN", "MANAGER", "COORDINATOR", "DIGITAL_MARKETING"));
+//    options.AddPolicy("MasterData.Edit", policy =>
+//        policy.RequireRole("ADMIN", "MANAGER", "COORDINATOR", "DIGITAL_MARKETING"));
 
-    // optional
-    options.AddPolicy("MasterData.Approve", policy =>
-        policy.RequireRole("ADMIN", "MANAGER"));
-});
+//    // optional
+//    options.AddPolicy("MasterData.Approve", policy =>
+//        policy.RequireRole("ADMIN", "MANAGER"));
+//});
+//Above is old policy and below is new policy
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy(Policies.MasterDataView, p => p.RequireAuthenticatedUser())
+    .AddPolicy(Policies.MasterDataEdit, p => p.RequireRole("ADMIN", "MANAGER", "COORDINATOR", "DIGITAL_MARKETING"))
+    .AddPolicy(Policies.MasterDataApprove, p => p.RequireRole("ADMIN", "MANAGER"))
+
+    // Lead policies
+    .AddPolicy(Policies.LeadCreate, p => p.RequireRole("ADMIN", "MANAGER", "DIGITAL_MARKETING"))
+    .AddPolicy(Policies.LeadViewAll, p => p.RequireRole("ADMIN", "MANAGER"))
+    .AddPolicy(Policies.LeadViewAssigned, p => p.RequireRole("COORDINATOR", "GROUNDSTAFF"))
+    .AddPolicy(Policies.LeadEdit, p => p.RequireRole("ADMIN", "MANAGER"))
+    .AddPolicy(Policies.LeadAssign, p => p.RequireRole("ADMIN", "MANAGER"))
+    .AddPolicy(Policies.LeadUpdateStatus, p => p.RequireRole("ADMIN", "MANAGER"))
+    .AddPolicy(Policies.LeadDiscard, p => p.RequireRole("ADMIN", "MANAGER", "COORDINATOR"))
+    .AddPolicy(Policies.LeadRestore, p => p.RequireRole("ADMIN", "MANAGER"))
+    .AddPolicy(Policies.LeadClose, p => p.RequireRole("ADMIN", "MANAGER", "COORDINATOR"))
+    .AddPolicy(Policies.LeadReopen, p => p.RequireRole("ADMIN", "MANAGER"));
 //CORS Service
 builder.Services.AddCors(options =>
 {

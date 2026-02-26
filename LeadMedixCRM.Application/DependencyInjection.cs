@@ -8,6 +8,7 @@ using LeadMedixCRM.Application.Features.LeadRequirements;
 using LeadMedixCRM.Application.Features.Leads.LeadActivites;
 using LeadMedixCRM.Application.Features.Leads.LeadAssignment;
 using LeadMedixCRM.Application.Features.Leads.LeadQuote;
+using LeadMedixCRM.Application.Features.Leads.Leads;
 using LeadMedixCRM.Application.Features.Leads.LeadVILs;
 using LeadMedixCRM.Application.Features.MasterData;
 using LeadMedixCRM.Application.Features.Treatments;
@@ -48,6 +49,7 @@ namespace LeadMedixCRM.Application
             services.AddScoped<ILeadVILService, LeadVILService>();
 
             services.AddScoped<ILeadActivityService, LeadActivityService>();
+            services.AddScoped<ILeadService, LeadService>();
             services.AddScoped<ITreatmentCategoryService, TreatmentCategoryService>();
             services.AddScoped<ITreatmentService, TreatmentService>();
 
