@@ -29,6 +29,7 @@ namespace LeadMedixCRM.Infrastructure.Persistence
         public DbSet<LeadRequirement> leadRequirements { get; set; }
         public DbSet<LeadVIL> leadVILs { get; set; }
         public DbSet<LeadActivity> LeadActivities { get; set; }
+        public DbSet<LeadMergeHistory> leadMergeHistories { get; set; }
         //Masters 
         public DbSet<HospitalReviewStatusMaster> hospitalReviewStatusMasters { get; set; }
         public DbSet<LeadCloseReasonMaster> leadCloseReasonMasters { get; set; }

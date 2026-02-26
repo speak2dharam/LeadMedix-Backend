@@ -21,5 +21,6 @@ namespace LeadMedixCRM.Application.Common.Interfaces.Repositories
 
         Task SaveChangesAsync();
         Task<Lead?> FindDuplicateAsync(string? phoneNormalized, string? emailNormalized);
+        Task<List<Lead>> GetDuplicatesByParentIdAsync(int parentLeadId);
     }
 }

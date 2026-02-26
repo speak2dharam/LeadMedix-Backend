@@ -89,19 +89,29 @@ namespace LeadMedixCRM.Infrastructure.Repositories
         public Task SaveChangesAsync() => _context.SaveChangesAsync();
         public async Task<Lead?> FindDuplicateAsync(string? phoneNormalized, string? emailNormalized)
         {
-            // If both are empty, no duplicate check possible
             if (string.IsNullOrWhiteSpace(phoneNormalized) && string.IsNullOrWhiteSpace(emailNormalized))
                 return null;
 
             var q = _context.Leads.AsQueryable();
+
+            q = q.Where(x => !x.IsDeleted);
+
+            // optional: ignore merged leads as source
+            q = q.Where(x => !x.IsMerged);
 
             q = q.Where(x =>
                 (!string.IsNullOrWhiteSpace(phoneNormalized) && x.PhoneNormalized == phoneNormalized) ||
                 (!string.IsNullOrWhiteSpace(emailNormalized) && x.EmailNormalized == emailNormalized)
             );
 
-            // Prefer latest (or you can filter !IsDiscarded if you want)
             return await q.OrderByDescending(x => x.CreatedAt).FirstOrDefaultAsync();
+        }
+        public async Task<List<Lead>> GetDuplicatesByParentIdAsync(int parentLeadId)
+        {
+            return await _context.Leads
+                .Where(x => x.DuplicateOfLeadId == parentLeadId)
+                .OrderByDescending(x => x.CreatedAt)
+                .ToListAsync();
         }
     }
 }

@@ -61,6 +61,7 @@ namespace LeadMedixCRM.Infrastructure
             services.AddScoped<ILeadActivityRepository, LeadActivityRepository>();
             services.AddScoped<ITreatmentCategoryRepository, TreatmentCategoryRepository>();
             services.AddScoped<ITreatmentRepository, TreatmentRepository>();
+            services.AddScoped<ILeadDuplicateRepository, LeadDuplicateRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 

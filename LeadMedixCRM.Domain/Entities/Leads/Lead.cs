@@ -53,5 +53,9 @@ namespace LeadMedixCRM.Domain.Entities.Leads
         public int? StatusBeforeClose { get; set; }
         public bool IsDuplicate { get; set; } = false;
         public int? DuplicateOfLeadId { get; set; }
+
+        public bool IsMerged { get; set; } = false;
+        public int? MergedIntoLeadId { get; set; }
+        public DateTime? MergedAt { get; set; }
     }
 }

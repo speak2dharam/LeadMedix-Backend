@@ -42,7 +42,13 @@ namespace LeadMedixCRM.Application.Features.Leads.Leads
             var emailNorm = NormalizeEmail(dto.Email);
 
             // Soft duplicate: allow but detect + link
-            var dup = await _leads.FindDuplicateAsync(phoneNorm, emailNorm);
+            var match = await _leads.FindDuplicateAsync(phoneNorm, emailNorm);
+            int? parentId = null;
+            if (match != null)
+            {
+                // if match is already duplicate, link to its parent
+                parentId = match.DuplicateOfLeadId ?? match.Id;
+            }
 
             var newStatusId = await GetLeadStatusIdByCodeAsync("NEW");
             var lead = new Lead
@@ -70,8 +76,8 @@ namespace LeadMedixCRM.Application.Features.Leads.Leads
                 Notes = dto.Notes,
 
                 // Duplicate flagging
-                IsDuplicate = dup != null,
-                DuplicateOfLeadId = dup?.Id,
+                IsDuplicate = parentId != null,
+                DuplicateOfLeadId = parentId,
 
                 LastActivityAt = DateTime.UtcNow,
 
@@ -87,9 +93,9 @@ namespace LeadMedixCRM.Application.Features.Leads.Leads
             {
                 LeadId = lead.Id,
                 ActivityType = 4, // System
-                Title = dup != null ? "Lead Created (Possible Duplicate)" : "Lead Created",
-                Summary = dup != null
-                    ? $"Possible duplicate of LeadId: {dup.Id}. New enquiry captured separately."
+                Title = match != null ? "Lead Created (Possible Duplicate)" : "Lead Created",
+                Summary = match != null
+                    ? $"Possible duplicate of LeadId: {match.Id}. New enquiry captured separately."
                     : "Lead created in system.",
                 PerformedByUserId = _currentUser.UserId,
                 CreatedAt = DateTime.UtcNow,
