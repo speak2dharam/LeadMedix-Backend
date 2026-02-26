@@ -23,5 +23,6 @@ namespace LeadMedixCRM.Application.Common.Security
         public const string LeadRestore = "Lead.Restore";
         public const string LeadClose = "Lead.Close";
         public const string LeadReopen = "Lead.Reopen";
+        public const string LeadMerge = "Lead.Merge";
     }
 }

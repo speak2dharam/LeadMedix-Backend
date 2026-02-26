@@ -1,6 +1,7 @@
 ﻿using LeadMedixCRM.API.Common;
 using LeadMedixCRM.Application.Common.Interfaces.Services;
 using LeadMedixCRM.Application.Common.Pagination;
+using LeadMedixCRM.Application.Common.Security;
 using LeadMedixCRM.Application.Features.Leads.Duplicates.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -42,6 +43,7 @@ namespace LeadMedixCRM.API.Controllers
 
         // POST /api/Leads/duplicates/merge/{parentLeadId}
         [HttpPost("merge/{parentLeadId:int}")]
+        [Authorize(Policy = Policies.LeadMerge)]
         public async Task<IActionResult> Merge(int parentLeadId, [FromBody] MergeDuplicatesRequest request)
         {
             await _service.MergeDuplicatesAsync(parentLeadId, request);

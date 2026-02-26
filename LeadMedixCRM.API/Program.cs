@@ -123,7 +123,8 @@ builder.Services.AddAuthorizationBuilder()
     .AddPolicy(Policies.LeadDiscard, p => p.RequireRole("ADMIN", "MANAGER", "COORDINATOR"))
     .AddPolicy(Policies.LeadRestore, p => p.RequireRole("ADMIN", "MANAGER"))
     .AddPolicy(Policies.LeadClose, p => p.RequireRole("ADMIN", "MANAGER", "COORDINATOR"))
-    .AddPolicy(Policies.LeadReopen, p => p.RequireRole("ADMIN", "MANAGER"));
+    .AddPolicy(Policies.LeadReopen, p => p.RequireRole("ADMIN", "MANAGER"))
+    .AddPolicy(Policies.LeadMerge, p => p.RequireRole("ADMIN", "MANAGER"));
 //CORS Service
 builder.Services.AddCors(options =>
 {
