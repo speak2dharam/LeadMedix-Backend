@@ -20,5 +20,6 @@ namespace LeadMedixCRM.Application.Common.Interfaces.Repositories
         Task<bool> EmailExistsAsync(string emailNormalized, int? excludeLeadId = null);
 
         Task SaveChangesAsync();
+        Task<Lead?> FindDuplicateAsync(string? phoneNormalized, string? emailNormalized);
     }
 }

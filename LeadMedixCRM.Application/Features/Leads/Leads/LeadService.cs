@@ -41,14 +41,10 @@ namespace LeadMedixCRM.Application.Features.Leads.Leads
             var phoneNorm = NormalizePhone(dto.Phone);
             var emailNorm = NormalizeEmail(dto.Email);
 
-            if (!string.IsNullOrWhiteSpace(phoneNorm) && await _leads.PhoneExistsAsync(phoneNorm))
-                throw new ValidationException("Phone already exists for another lead.");
-
-            if (!string.IsNullOrWhiteSpace(emailNorm) && await _leads.EmailExistsAsync(emailNorm))
-                throw new ValidationException("Email already exists for another lead.");
+            // Soft duplicate: allow but detect + link
+            var dup = await _leads.FindDuplicateAsync(phoneNorm, emailNorm);
 
             var newStatusId = await GetLeadStatusIdByCodeAsync("NEW");
-
             var lead = new Lead
             {
                 FullName = dto.FullName.Trim(),
@@ -72,21 +68,29 @@ namespace LeadMedixCRM.Application.Features.Leads.Leads
                 TreatmentId = dto.TreatmentId,
 
                 Notes = dto.Notes,
+
+                // Duplicate flagging
+                IsDuplicate = dup != null,
+                DuplicateOfLeadId = dup?.Id,
+
                 LastActivityAt = DateTime.UtcNow,
 
                 CreatedAt = DateTime.UtcNow,
                 CreatedBy = _currentUser.UserId
             };
-
+            // Add + Save to get lead.Id
             await _leads.AddAsync(lead);
+            await _leads.SaveChangesAsync();   // lead.Id is now available
 
-            // system activity
+            // system activity for lead creation
             await _activities.AddAsync(new LeadActivity
             {
                 LeadId = lead.Id,
                 ActivityType = 4, // System
-                Title = "Lead Created",
-                Summary = "Lead created in system.",
+                Title = dup != null ? "Lead Created (Possible Duplicate)" : "Lead Created",
+                Summary = dup != null
+                    ? $"Possible duplicate of LeadId: {dup.Id}. New enquiry captured separately."
+                    : "Lead created in system.",
                 PerformedByUserId = _currentUser.UserId,
                 CreatedAt = DateTime.UtcNow,
                 CreatedBy = _currentUser.UserId
