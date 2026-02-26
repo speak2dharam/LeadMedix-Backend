@@ -9,37 +9,45 @@ namespace LeadMedixCRM.Domain.Entities.Leads
 {
     public class Lead : BaseEntity
     {
+        // Patient / lead basic details
         public string FullName { get; set; } = default!;
-        public string Phone { get; set; } = default!;
-        public string PhoneNormalized { get; set; } = default!;
+        public string? Phone { get; set; }
+        public string? PhoneNormalized { get; set; }
         public string? Email { get; set; }
         public string? EmailNormalized { get; set; }
 
-        public int? CountryId { get; set; }
-        public int? CityId { get; set; }
+        public int? CountryId { get; set; }  // FK concept only
+        public int? CityId { get; set; }     // FK concept only
 
-        public int? TreatmentId { get; set; }
-        public int? SourceId { get; set; }
+        // What is the enquiry / requirement?
+        public string? Enquiry { get; set; } // e.g. "Need cost for prostate cancer surgery"
 
-        public int Temperature { get; set; }          // or enum LeadTemperature
-        public int LeadStatusId { get; set; }         // LeadStatusMaster.Id (overall pipeline)
+        // Lead workflow masters
+        public int Status { get; set; }      // LeadStatusMaster.Id
+        public int Temperature { get; set; } // 0 Cold, 1 Warm, 2 Hot
 
-        public int? AssignedToUserId { get; set; }
+        // Assignment
+        public int? AssignedToUserId { get; set; } // FK concept only
 
-        // Optional case summary
-        public string? Diagnosis { get; set; }
+        // Source + Reporting classification
+        public int? LeadSourceId { get; set; }          // LeadSource.Id
+        public int? TreatmentCategoryId { get; set; }   // TreatmentCategory.Id
+        public int? TreatmentId { get; set; }           // Treatment.Id
+
         public string? Notes { get; set; }
 
-        // Closure / discard metadata
-        public bool IsDiscarded { get; set; }
-        public int? DiscardReasonId { get; set; }
+        // Quick reporting / listing
+        public DateTime? LastActivityAt { get; set; }   // nullable
+
+        // Close/Discard
+        public bool IsDiscarded { get; set; } = false;
+        public int? DiscardReasonId { get; set; }       // LeadDiscardReasonMaster.Id
+        public string? DiscardRemarks { get; set; }
         public DateTime? DiscardedAt { get; set; }
 
-        public bool IsClosed { get; set; }
-        public int? CloseReasonId { get; set; }
+        public bool IsClosed { get; set; } = false;
+        public int? CloseReasonId { get; set; }         // LeadCloseReasonMaster.Id
+        public string? CloseRemarks { get; set; }
         public DateTime? ClosedAt { get; set; }
-
-        // Sorting / timeline
-        public DateTime? LastActivityAt { get; set; }
     }
 }

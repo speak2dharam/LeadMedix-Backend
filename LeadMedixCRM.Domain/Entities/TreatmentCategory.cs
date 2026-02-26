@@ -9,6 +9,8 @@ namespace LeadMedixCRM.Domain.Entities
 {
     public class TreatmentCategory : BaseEntity
     {
-        public string Name { get; set; } = default!;
+        public string Name { get; set; } = default!;   // e.g. Cancer, Transplant
+        public int SortOrder { get; set; } = 0;
+        public bool IsActive { get; set; } = true;
     }
 }

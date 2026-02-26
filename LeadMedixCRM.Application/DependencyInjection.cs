@@ -5,10 +5,12 @@ using LeadMedixCRM.Application.Features.Hospitals;
 using LeadMedixCRM.Application.Features.LeadHospitalReviews;
 using LeadMedixCRM.Application.Features.LeadMasters;
 using LeadMedixCRM.Application.Features.LeadRequirements;
+using LeadMedixCRM.Application.Features.Leads.LeadActivites;
 using LeadMedixCRM.Application.Features.Leads.LeadAssignment;
 using LeadMedixCRM.Application.Features.Leads.LeadQuote;
 using LeadMedixCRM.Application.Features.Leads.LeadVILs;
 using LeadMedixCRM.Application.Features.MasterData;
+using LeadMedixCRM.Application.Features.Treatments;
 using LeadMedixCRM.Application.Features.Users;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -44,6 +46,10 @@ namespace LeadMedixCRM.Application
             services.AddScoped<ILeadAssignmentHistoryService, LeadAssignmentHistoryService>();
             services.AddScoped<ILeadQuotationService, LeadQuotationService>();
             services.AddScoped<ILeadVILService, LeadVILService>();
+
+            services.AddScoped<ILeadActivityService, LeadActivityService>();
+            services.AddScoped<ITreatmentCategoryService, TreatmentCategoryService>();
+            services.AddScoped<ITreatmentService, TreatmentService>();
 
             return services;
         }

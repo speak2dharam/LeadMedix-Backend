@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LeadMedixCRM.Domain.Entities
+namespace LeadMedixCRM.Domain.Entities.Leads
 {
     public class LeadSource : BaseEntity
     {
