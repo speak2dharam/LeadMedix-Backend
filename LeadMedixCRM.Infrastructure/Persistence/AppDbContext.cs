@@ -78,7 +78,7 @@ namespace LeadMedixCRM.Infrastructure.Persistence
             // Indexes (for duplicate check + filters)
             modelBuilder.Entity<Lead>().HasIndex(x => x.PhoneNormalized);
             modelBuilder.Entity<Lead>().HasIndex(x => x.EmailNormalized);
-            modelBuilder.Entity<Lead>().HasIndex(x => new { x.Status, x.Temperature });
+            //modelBuilder.Entity<Lead>().HasIndex(x => new { x.Status, x.Temperature });
             modelBuilder.Entity<Lead>().HasIndex(x => x.AssignedToUserId);
 
             modelBuilder.Entity<LeadActivity>().HasIndex(x => x.LeadId);

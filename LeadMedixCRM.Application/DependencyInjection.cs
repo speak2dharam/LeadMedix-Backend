@@ -5,7 +5,6 @@ using LeadMedixCRM.Application.Features.Hospitals;
 using LeadMedixCRM.Application.Features.LeadHospitalReviews;
 using LeadMedixCRM.Application.Features.LeadMasters;
 using LeadMedixCRM.Application.Features.LeadRequirements;
-using LeadMedixCRM.Application.Features.Leads;
 using LeadMedixCRM.Application.Features.Leads.LeadAssignment;
 using LeadMedixCRM.Application.Features.Leads.LeadQuote;
 using LeadMedixCRM.Application.Features.Leads.LeadVILs;
@@ -26,7 +25,6 @@ namespace LeadMedixCRM.Application
         {
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, AuthService>();
-            services.AddScoped<ILeadService, LeadService>();
 
             services.AddScoped<IMasterDataService, MasterDataService>();
             services.AddScoped<IHospitalService, HospitalService>();

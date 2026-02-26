@@ -17,12 +17,12 @@ namespace LeadMedixCRM.Infrastructure.Persistence
         {
             _db = db;
 
-            Leads = new LeadRepository(_db);
-            LeadActivities = new LeadActivityRepository(_db);
+            //Leads = new LeadRepository(_db);
+            //LeadActivities = new LeadActivityRepository(_db);
         }
 
-        public ILeadRepository Leads { get; }
-        public ILeadActivityRepository LeadActivities { get; }
+        //public ILeadRepository Leads { get; }
+        //public ILeadActivityRepository LeadActivities { get; }
 
         public IRoleRepository Roles { get; }
         public IUserRoleRepository UserRoles { get; }

@@ -9,8 +9,6 @@ namespace LeadMedixCRM.Application.Common.Interfaces
 {
     public interface IUnitOfWork
     {
-        ILeadRepository Leads { get; }
-        ILeadActivityRepository LeadActivities { get; }
         IRoleRepository Roles { get; }
         IUserRoleRepository UserRoles { get; }
 

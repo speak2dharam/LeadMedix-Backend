@@ -16,20 +16,30 @@ namespace LeadMedixCRM.Domain.Entities.Leads
         public string? EmailNormalized { get; set; }
 
         public int? CountryId { get; set; }
+        public int? CityId { get; set; }
+
         public int? TreatmentId { get; set; }
         public int? SourceId { get; set; }
 
-        public int Temperature { get; set; } // 0 Cold, 1 Warm, 2 Hot
-
-        public int Status { get; set; } // LeadStatusMaster.Id (overall pipeline)
+        public int Temperature { get; set; }          // or enum LeadTemperature
+        public int LeadStatusId { get; set; }         // LeadStatusMaster.Id (overall pipeline)
 
         public int? AssignedToUserId { get; set; }
 
+        // Optional case summary
+        public string? Diagnosis { get; set; }
+        public string? Notes { get; set; }
+
         // Closure / discard metadata
-        public int? DiscardReasonId { get; set; } // LeadDiscardReasonMaster.Id
+        public bool IsDiscarded { get; set; }
+        public int? DiscardReasonId { get; set; }
         public DateTime? DiscardedAt { get; set; }
 
-        public int? CloseReasonId { get; set; }   // LeadCloseReasonMaster.Id
+        public bool IsClosed { get; set; }
+        public int? CloseReasonId { get; set; }
         public DateTime? ClosedAt { get; set; }
+
+        // Sorting / timeline
+        public DateTime? LastActivityAt { get; set; }
     }
 }

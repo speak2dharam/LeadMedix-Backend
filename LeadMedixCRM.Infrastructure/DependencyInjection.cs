@@ -27,8 +27,6 @@ namespace LeadMedixCRM.Infrastructure
             services.AddScoped<IUserTokenRepository, UserTokenRepository>();
             services.AddHttpContextAccessor();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
-            services.AddScoped<ILeadRepository, LeadRepository>();
-            services.AddScoped<ILeadActivityRepository, LeadActivityRepository>();
 
             services.AddScoped<IUserRoleRepository, UserRoleRepository>();
             // If you add role CRUD:
